@@ -173,8 +173,12 @@ class ProcessDirectory(beam.DoFn):
             input_frames, _TIMES_TO_INTERPOLATE.value, self.interpolator))
     _output_frames(frames, f'{directory}/interpolated_frames')
     if _OUTPUT_VIDEO.value:
-      media.write_video(f'{directory}/interpolated.mp4', frames, fps=_FPS.value)
-      logging.info('Output video saved at %s/interpolated.mp4.', directory)
+      times_to_interpolate = _TIMES_TO_INTERPOLATE.value
+      flim_net_model = _MODEL_PATH.value.split('/')[-2]
+      file_namespace = os.path.basename(os.path.normpath(directory))
+      final_filename = f"{file_namespace}_{_FPS.value}FPS_model{flim_net_model}-n{times_to_interpolate}.mp4"
+      media.write_video(f'{directory}/{final_filename}', frames, fps=_FPS.value)
+      logging.info('Output video saved at %s/%s.mp4.', (directory, final_filename))
 
 
 def _run_pipeline() -> None:
