@@ -178,7 +178,7 @@ class ProcessDirectory(beam.DoFn):
       file_namespace = os.path.basename(os.path.normpath(directory))
       final_filename = f"{file_namespace}_{_FPS.value}FPS_model{flim_net_model}-n{times_to_interpolate}.mp4"
       media.write_video(f'{directory}/{final_filename}', frames, fps=_FPS.value)
-      logging.info('Output video saved at %s/%s.mp4.', (directory, final_filename))
+      logging.info(f'Output video saved at {directory}/{final_filename}.mp4.') 
 
 
 def _run_pipeline() -> None:
