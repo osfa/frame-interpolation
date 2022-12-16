@@ -166,19 +166,19 @@ class ProcessDirectory(beam.DoFn):
         natsort.natsorted(tf.io.gfile.glob(f'{directory}/*.{ext}'))
         for ext in _INPUT_EXT
     ]
+    times_to_interpolate = _TIMES_TO_INTERPOLATE.value
     input_frames = functools.reduce(lambda x, y: x + y, input_frames_list)
     logging.info('Generating in-between frames for %s.', directory)
     frames = list(
         util.interpolate_recursively_from_files(
             input_frames, _TIMES_TO_INTERPOLATE.value, self.interpolator))
-    _output_frames(frames, f'{directory}/interpolated_frames')
+    _output_frames(frames, f'{directory}/interpolated_frames_{times_to_interpolate}')
     if _OUTPUT_VIDEO.value:
-      times_to_interpolate = _TIMES_TO_INTERPOLATE.value
       flim_net_model = _MODEL_PATH.value.split('/')[-2]
       file_namespace = os.path.basename(os.path.normpath(directory))
       final_filename = f"{file_namespace}_{_FPS.value}FPS_model{flim_net_model}-n{times_to_interpolate}.mp4"
       media.write_video(f'{directory}/{final_filename}', frames, fps=_FPS.value)
-      logging.info(f'Output video saved at {directory}/{final_filename}.mp4.') 
+      logging.info(f'Output video saved at {directory}/{final_filename}.') 
 
 
 def _run_pipeline() -> None:
